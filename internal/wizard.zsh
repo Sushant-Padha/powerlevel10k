@@ -14,6 +14,7 @@ if (( OPTIND <= ARGC )); then
   return 1
 fi
 
+<<<<<<< HEAD
 if (( $+terminfo[smcup] && $+terminfo[rmcup] )) && echoti smcup 2>/dev/null; then
   function restore_screen() {
     echoti rmcup 2>/dev/null
@@ -62,6 +63,44 @@ local -r time_12h='04:23:42 PM'
 local -ra lean_left=(
   '%$frame_color[$color]F╭─ ' '${extra_icons[1]:+%f$extra_icons[1] }%31F$extra_icons[2]%B%39F~%b%31F/%B%39Fsrc%b%f $prefixes[1]%76F$extra_icons[3]master%f '
   '%$frame_color[$color]F╰─' '%76F$prompt_char%f ${buffer:-$cursor}'
+=======
+: ${__p9k_root_dir:=${0:h:h:A}}
+
+typeset -gr __p9k_root_dir
+typeset -gri force
+
+source $__p9k_root_dir/internal/configure.zsh || return
+
+typeset -r font_base_url='https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts'
+typeset -ri wizard_columns=$((COLUMNS < 80 ? COLUMNS : 80))
+
+typeset -i prompt_indent=2
+typeset -i rprompt_indent=2
+
+typeset -ra bg_color=(240 238 236 234)
+typeset -ra frame_color=(244 242 240 238)
+typeset -ra sep_color=(248 246 244 242)
+typeset -ra prefix_color=(250 248 246 244)
+
+typeset -r left_circle='\uE0B6'
+typeset -r right_circle='\uE0B4'
+typeset -r left_arc='\uE0B7'
+typeset -r right_arc='\uE0B5'
+typeset -r left_triangle='\uE0B2'
+typeset -r right_triangle='\uE0B0'
+typeset -r left_angle='\uE0B3'
+typeset -r right_angle='\uE0B1'
+typeset -r down_triangle='\uE0BC'
+typeset -r up_triangle='\uE0BA'
+typeset -r fade_in='░▒▓'
+typeset -r fade_out='▓▒░'
+typeset -r vertical_bar='|'
+typeset -r slanted_bar='\uE0BD'
+
+typeset -ra lean_left=(
+  '' '${extra_icons[1]:+$extra_icons[1] }%31F$extra_icons[2]%B%39F~%b%31F/%B%39Fsrc%b%f $prefixes[1]%76F$extra_icons[3]master%f '
+  '' '%76F❯%f █'
+>>>>>>> upstream/screenshot
 )
 
 local -ra lean_right=(
@@ -147,6 +186,7 @@ function print_prompt() {
     (( left_frame )) || left=('' $left[2] '' "%F{$c}$prompt_char%f ${buffer:-$cursor}")
     (( right_frame )) || right=($right[1] '' '' '')
   fi
+<<<<<<< HEAD
   local -i left_indent=prompt_indent
   local -i right_indent=prompt_indent
   prompt_length ${(g::):-$left[1]$left[2]$right[1]$right[2]}
@@ -160,6 +200,12 @@ function print_prompt() {
       print -P '  [%3Fnot enough horizontal space to display this%f]'
       return 0
     fi
+=======
+  local -i right_indent=rprompt_indent
+  local -i width=$(prompt_length ${(g::):-$left[1]$left[2]$right[1]$right[2]})
+  while (( wizard_columns - width <= prompt_indent + right_indent )); do
+    (( --right_indent ))
+>>>>>>> upstream/screenshot
   done
   local -i i
   for ((i = 1; i < $#left; i+=2)); do
@@ -2059,8 +2105,129 @@ while true; do
   fi
 
   _p9k_init_icons
+<<<<<<< HEAD
   ask_icon_padding     || continue
   _p9k_init_icons
+=======
+  ask_narrow_icons     || continue
+
+  # Set screen size to 80x25, run `p10k configure`, answer "yyyy22".
+  # gsettings set org.gnome.desktop.interface monospace-font-name 'MesloLGS NF 48'
+  local few_icons=("$extra_icons[@]")
+  ask_extra_icons      || continue
+  local many_icons=("$extra_icons[@]")
+
+  local concise=("$prefixes[@]")
+  ask_prefixes         || continue
+  local fluent=("$prefixes[@]")
+
+  color=3
+
+  reset
+  echo
+  flowing -c "Lean Style"
+  (
+    style=lean
+    extra_icons=("$few_icons[@]")
+    prefixes=("$concise[@]")
+    show_time=
+    num_lines=1
+    prompt_indent=4
+    rprompt_indent=4
+    echo
+    print_prompt
+  )
+  echo
+  (
+    style=lean
+    extra_icons=("$many_icons[@]")
+    prefixes=("$fluent[@]")
+    show_time=1
+    num_lines=2
+    prompt_indent=4
+    rprompt_indent=4
+    echo
+    print_prompt
+  )
+  echo
+  flowing -c "Classic Style"
+  (
+    style=classic
+    extra_icons=("$few_icons[@]")
+    prefixes=("$concise[@]")
+    show_time=
+    num_lines=1
+    prompt_indent=4
+    rprompt_indent=4
+    echo
+    print_prompt
+  )
+  echo
+  (
+    style=classic
+    extra_icons=("$many_icons[@]")
+    prefixes=("$fluent[@]")
+    show_time=1
+    num_lines=2
+    # slanted sep
+    left_sep=$down_triangle
+    right_sep=$up_triangle
+    left_subsep=$slanted_bar
+    right_subsep=$slanted_bar
+    # blurred heads
+    left_head=$fade_out;       right_head=$fade_in;
+    # blurred tails
+    left_tail=$fade_in; right_tail=$fade_out;
+    gap_char="·"
+    prompt_indent=2
+    rprompt_indent=2
+    echo
+    print_prompt
+  )
+  echo
+  flowing -c "Rainbow Style"
+  (
+    style=rainbow
+    extra_icons=("$few_icons[@]")
+    prefixes=("$concise[@]")
+    show_time=
+    num_lines=1
+    prompt_indent=4
+    rprompt_indent=4
+    echo
+    print_prompt
+  )
+  echo
+  (
+    style=rainbow
+    extra_icons=("$many_icons[@]")
+    prefixes=("$fluent[@]")
+    show_time=1
+    num_lines=2
+    # slanted sep
+    left_sep=$down_triangle
+    right_sep=$up_triangle
+    left_subsep=$slanted_bar
+    right_subsep=$slanted_bar
+    # slanted heads
+    left_head=$down_triangle
+    right_head=$up_triangle
+    # slanted tails
+    left_tail=$up_triangle
+    right_tail=$down_triangle
+    # gap_char="·"
+    gap_char="─"
+    left_frame=0; right_frame=1
+    prompt_indent=4
+    rprompt_indent=2
+    echo
+    print_prompt
+  )
+  tput civis
+  trap 'tput cnorm' EXIT INT
+  read
+  return 1
+>>>>>>> upstream/screenshot
 
   ask_style            || continue
   ask_charset          || continue
